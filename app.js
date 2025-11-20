@@ -1,5 +1,5 @@
 // ===== グローバル変数 =====
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxxpRqydeJCcPMCPm3apwmlkt6v--GDCKPeTEHW_SNWxdAoxBY8aumStZo8hXSMrpuB/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyrC_Zlb_j_OkeQRovp40Q7CnW2PKjujTf5djHcBrnsHD9Z2XbFXkZE_J52_2Um6W3J/exec';
 
 let products = [];
 let cart = [];
