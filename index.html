@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>井原研究室 発注システム</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<!-- ================================ -->
+<!--  ヘッダー -->
+<!-- ================================ -->
+<header>
+    <div class="container header-content">
+        <div class="logo">
+            <i class="fas fa-flask"></i>
+            <h1>井原研究室 発注システム</h1>
+        </div>
+
+        <nav>
+            <button class="nav-btn active" data-page="products">
+                <i class="fas fa-boxes"></i> 商品一覧
+            </button>
+            <button class="nav-btn" data-page="cart">
+                <i class="fas fa-shopping-cart"></i> カート
+                <span id="cartCount" class="cart-badge">0</span>
+            </button>
+            <button class="nav-btn" data-page="orders">
+                <i class="fas fa-file-invoice"></i> 発注履歴
+            </button>
+            <button class="nav-btn" data-page="admin">
+                <i class="fas fa-cog"></i> 商品管理
+            </button>
+            <button class="nav-btn" data-page="members">
+                <i class="fas fa-users"></i> メンバー
+            </button>
+        </nav>
+    </div>
+</header>
+
+<!-- 通知 -->
+<div id="notification" class="notification"></div>
+
+<main>
+<!-- ================================ -->
+<!--  商品一覧ページ -->
+<!-- ================================ -->
+<div id="productsPage" class="page active">
+
+    <div class="page-header">
+        <h2><i class="fas fa-boxes"></i> 商品一覧</h2>
+
+        <div class="search-filter">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="商品名・メーカー・型番で検索">
+            </div>
+
+            <select id="categoryFilter">
+                <option value="">カテゴリ（すべて）</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="productsList" class="products-grid"></div>
+</div>
+
+
+<!-- ================================ -->
+<!--  カートページ -->
+<!-- ================================ -->
+<div id="cartPage" class="page">
+
+    <div class="page-header">
+        <h2><i class="fas fa-shopping-cart"></i> カート</h2>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div id="cartSummary" class="cart-summary" style="display:none;">
+        <div class="summary-content">
+
+            <div class="summary-row">
+                <span>選択中の商品</span>
+                <span id="subtotal">0件</span>
+            </div>
+
+            <div class="summary-row">
+                <span>総数量</span>
+                <span id="total">0</span>
+            </div>
+
+            <label>
+                備考：
+                <textarea id="orderNotes" placeholder="特記事項があれば記入"></textarea>
+            </label>
+
+            <label>
+                注文者：
+                <select id="orderMemberSelect"></select>
+            </label>
+
+            <button id="createOrderBtn" class="btn btn-primary btn-large btn-full" style="margin-top:16px;">
+                <i class="fas fa-file-invoice"></i> 発注書を作成
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================ -->
+<!--  発注履歴ページ -->
+<!-- ================================ -->
+<div id="ordersPage" class="page">
+
+    <div class="page-header">
+        <h2><i class="fas fa-file-invoice"></i> 発注履歴</h2>
+    </div>
+
+    <div id="ordersList"></div>
+</div>
+
+
+<!-- ================================ -->
+<!--  商品管理ページ -->
+<!-- ================================ -->
+<div id="adminPage" class="page">
+
+    <div class="page-header">
+        <h2><i class="fas fa-cog"></i> 商品管理</h2>
+        <button id="addProductBtn" class="btn btn-primary btn-large">
+            <i class="fas fa-plus"></i> 商品を追加
+        </button>
+    </div>
+
+    <div id="adminProductsList"></div>
+</div>
+
+
+<!-- ================================ -->
+<!--  メンバー管理ページ -->
+<!-- ================================ -->
+<div id="membersPage" class="page">
+
+    <div class="page-header">
+        <h2><i class="fas fa-users"></i> メンバー管理</h2>
+
+        <button id="addMemberBtn" class="btn btn-primary btn-large">
+            <i class="fas fa-user-plus"></i> メンバー追加
+        </button>
+    </div>
+
+    <div id="membersList"></div>
+</div>
+
+
+<!-- ================================ -->
+<!--  商品モーダル -->
+<!-- ================================ -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3 id="modalTitle">商品を追加</h3>
+            <button id="closeModal" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <form id="productForm">
+
+                <input type="hidden" id="productId">
+
+                <div class="form-group">
+                    <label>画像URL</label>
+                    <input type="text" id="productImage">
+                </div>
+
+                <div class="form-group">
+                    <label>略称</label>
+                    <input type="text" id="productShortName">
+                </div>
+
+                <div class="form-group">
+                    <label>品名 <span class="required">*</span></label>
+                    <input type="text" id="productName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>メーカー</label>
+                    <input type="text" id="productManufacturer">
+                </div>
+
+                <div class="form-group">
+                    <label>商品コード</label>
+                    <input type="text" id="productCatalog">
+                </div>
+
+                <div class="form-group">
+                    <label>内容量</label>
+                    <input type="text" id="productCapacity">
+                </div>
+
+                <div class="form-group">
+                    <label>使用場所</label>
+                    <input type="text" id="productUsagePlace">
+                </div>
+
+                <div class="form-group">
+                    <label>カテゴリ</label>
+                    <input type="text" id="productCategory">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" id="cancelBtn" class="btn btn-secondary">キャンセル</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================ -->
+<!--  メンバーモーダル -->
+<!-- ================================ -->
+<div id="memberModal" class="modal">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3 id="memberModalTitle">メンバー追加</h3>
+            <button id="closeMemberModal" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <form id="memberForm">
+
+                <input type="hidden" id="memberId">
+
+                <div class="form-group">
+                    <label>名前 <span class="required">*</span></label>
+                    <input type="text" id="memberName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>メールアドレス（任意）</label>
+                    <input type="email" id="memberEmail">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" id="cancelMemberBtn" class="btn btn-secondary">キャンセル</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================ -->
+<!--  発注書プレビュー -->
+<!-- ================================ -->
+<div id="orderPreviewModal" class="modal">
+    <div class="modal-content modal-large">
+
+        <div class="modal-header">
+            <h3>発注書プレビュー</h3>
+            <button id="closePreviewBtn" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <div id="orderPreview" class="order-preview"></div>
+        </div>
+
+        <div class="modal-actions">
+            <button id="printOrderBtn" class="btn btn-primary">
+                <i class="fas fa-print"></i> 印刷
+            </button>
+        </div>
+
+    </div>
+</div>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
